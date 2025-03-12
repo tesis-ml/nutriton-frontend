@@ -22,8 +22,8 @@ export default function UpdateProfileForm({ user }: { user: User }) {
     const form = useForm<ProfileSchema>({
         resolver: zodResolver(profileSchema),
         defaultValues: {
-            first_name: user?.first_name || "",
-            last_name: user?.last_name || "",
+            first_name: user?.firstName || "",
+            last_name: user?.lastName || "",
             email: user?.email || ""
         },
     });
