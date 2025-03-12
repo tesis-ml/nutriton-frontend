@@ -7,10 +7,9 @@ import { loginSchema, LoginSchema, defaultValues } from "@/schemas/login.schema"
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
 
 export default function LoginPage() {
-    const { login, isLoading, error } = useLogin();
+    const { login, isLoading } = useLogin();
 
     const form = useForm<LoginSchema>({
         resolver: zodResolver(loginSchema),
@@ -18,12 +17,7 @@ export default function LoginPage() {
     });
 
     const onSubmit = (formData: LoginSchema) => {
-        try {
-            login(formData);
-        } catch (error) {
-            toast.error("Error inesperado al iniciar sesión");
-            console.error("Error al iniciar sesión:", error);
-        }
+        login(formData);
     };
 
     return (
@@ -49,14 +43,6 @@ export default function LoginPage() {
                             placeholder="••••••••"
                             control={form.control}
                         />
-
-                        {error && (
-                            <div className="text-sm text-red-500 mt-1">
-                                {error instanceof Error
-                                    ? error.message
-                                    : "Error al iniciar sesión. Verifica tus credenciales."}
-                            </div>
-                        )}
 
                         <div className="grid gap-4 my-4">
                             <Button

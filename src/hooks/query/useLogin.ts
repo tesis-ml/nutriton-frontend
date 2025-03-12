@@ -4,6 +4,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '@/services/auth.service';
 import useAuthStore from '@/stores/auth.store';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 export const useLogin = () => {
     const navigate = useNavigate();
@@ -14,6 +16,13 @@ export const useLogin = () => {
         onSuccess: (user) => {
             setUser(user);
             navigate('/dashboard', { replace: true });
+        },
+        onError: (error) => {
+            console.error(error);
+            if (error instanceof AxiosError) {
+                if (error.response?.status === 401) toast.error('Credenciales incorrectas');
+                else toast.error('Error al iniciar sesión');
+            }
         }
     });
 
