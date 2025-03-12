@@ -1,0 +1,11 @@
+{
+  "useTypescript": true,
+  "componentsPath": "src/components",
+  "createCssFiles": false,
+  "componentContentType": "Functional Components",
+  "atomsPath": "src/components/atoms",
+  "moleculesPath": "src/components/molecules",
+  "organismsPath": "src/components/organisms",
+  "templatesPath": "src/views/layouts",
+  "pagesPath": "src/views/pages"
+}
