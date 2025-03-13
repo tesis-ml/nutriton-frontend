@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 export default function ForbbidenPage() {
     return (
-        <div className="h-dvh flex flex-col items-center justify-center text-center gap-8 p-4">
+        <div className="flex-1 flex flex-col items-center justify-center text-center gap-8 p-4">
             <div>
                 <AppHeader />
 

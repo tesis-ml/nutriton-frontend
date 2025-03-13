@@ -1,4 +1,3 @@
-// src/hooks/useLogin.ts
 import { LoginSchema } from '@/schemas/login.schema';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';

@@ -1,5 +1,6 @@
 import axiosClient from '@/config/axios.config';
 import { LoginSchema } from '@/schemas/login.schema';
+import { RegisterSchema } from '@/schemas/register.schema';
 
 interface LoginResponse {
     access_token: string;
@@ -16,6 +17,18 @@ export const AuthService = {
         const user = await this.getCurrentUser();
 
         return user!;
+    },
+
+    async register(credentials: RegisterSchema): Promise<string> {
+
+        await axiosClient.instance.post('/auth/signup', {
+            "fisrtName": credentials.first_name,
+            "lastName": credentials.last_name,
+            "email": credentials.email,
+            "password": credentials.password
+        });
+
+        return "Usuario registrado correctamente";
     },
 
     async getCurrentUser(): Promise<User | null> {

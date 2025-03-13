@@ -1,18 +1,14 @@
 import CustomInput from "@/components/atoms/CustomInput";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useRegister } from "@/hooks/query/useRegister";
 import { registerSchema, RegisterSchema } from "@/schemas/register.schema";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 export default function RegisterPage() {
 
-    const navigate = useNavigate();
-
-    const [loading, setLoading] = useState(false);
+    const { register, isLoading, isSuccess } = useRegister();
 
     const form = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema), defaultValues: {
@@ -25,32 +21,9 @@ export default function RegisterPage() {
     });
 
     const onSubmit = async (formData: RegisterSchema) => {
-        setLoading(true);
-        // Mock API call to simulate user registration
-        const mockApiCall = (formData: RegisterSchema) => {
-            return new Promise<{ data?: any, error?: any }>((resolve) => {
-            setTimeout(() => {
-                if (formData.email === "error@example.com") {
-                resolve({ error: { message: "Mock error: Email already in use" } });
-                } else {
-                resolve({ data: { message: "Mock success: User registered" } });
-                }
-            }, 1000);
-            });
-        };
-
-        const { data, error } = await mockApiCall(formData);
-
-        if (error) {
-            toast.error(error.message);
-            console.log({ data, error });
-            setLoading(false); return;
-        }
-
-        console.log(data);
-        toast.success('Se ha enviado un correo de confirmación a tu email!');
-        setLoading(false);
-        setTimeout(() => navigate('/login'), 1000);
+        register(formData);
+        if (isSuccess)
+            form.reset();
     }
 
     return (
@@ -92,7 +65,7 @@ export default function RegisterPage() {
                         />
 
                         <div className="grid gap-4 my-4">
-                            <Button type="submit" className="w-full" loading={loading} > Registrarse </Button>
+                            <Button type="submit" className="w-full" loading={isLoading} > Registrarse </Button>
                         </div>
 
                     </form>
@@ -101,10 +74,6 @@ export default function RegisterPage() {
 
             </div>
 
-            <div className="mb-8 text-center text-sm">
-                Ya tienes una cuenta?{' '}
-                <Link to="/login" className="underline"> Inicia sesión </Link>
-            </div>
         </div>
     )
 }
