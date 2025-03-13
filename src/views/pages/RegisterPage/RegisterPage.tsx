@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 
 export default function RegisterPage() {
 
-    const { register, isLoading, isSuccess } = useRegister();
+    const { registerAsync, isLoading } = useRegister();
 
     const form = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema), defaultValues: {
@@ -21,9 +21,12 @@ export default function RegisterPage() {
     });
 
     const onSubmit = async (formData: RegisterSchema) => {
-        register(formData);
-        if (isSuccess)
-            form.reset();
+        try {
+            await registerAsync(formData);
+            form.reset(); // Si llegamos aquí, la operación fue exitosa
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     return (

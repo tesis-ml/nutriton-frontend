@@ -35,9 +35,7 @@ export const AuthService = {
         try {
             const token = localStorage.getItem('auth_token');
 
-            if (!token) {
-                return null;
-            }
+            if (!token) return null;
 
             axiosClient.setToken(token);
 
@@ -55,7 +53,7 @@ export const AuthService = {
     },
 
     isAuthenticated(): boolean {
-        return !!localStorage.getItem('auth_token');
+        return localStorage.getItem('auth_token') !== null;
     }
 };
 

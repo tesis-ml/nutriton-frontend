@@ -1,6 +1,6 @@
 import MobileNavTrigger from '@/components/molecules/MobileNavTrigger';
 import UserMenu from '@/components/molecules/UserMenu';
-import { useLogout } from '@/hooks/query/useLogout';
+import { useLogout } from '@/hooks/useLogout.ts';
 import useAuthStore from '@/stores/auth.store';
 import React from 'react';
 

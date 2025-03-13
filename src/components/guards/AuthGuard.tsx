@@ -12,11 +12,6 @@ export default function AuthGuard({ inverted = false }: { inverted?: boolean }) 
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                if (user) {
-                    setLoading(false);
-                    return;
-                }
-
                 const isAuth = AuthService.isAuthenticated();
 
                 if (isAuth) {
