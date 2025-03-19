@@ -1,4 +1,5 @@
 import axiosClient from "@/config/axios.config";
+import {AxiosResponse} from "axios";
 
 // ------------------------------------------------------------
 
@@ -25,17 +26,15 @@ export async function updateFood(foodID: number, dto: updateFoodRequestBody): Pr
     return response.data;
 }
 
-export async function searchFood(dto: searchFoodRequestBody): Promise<Food[]> {
+export async function searchFood(dto: searchFoodRequestBody): Promise<AxiosResponse<{ data:Food[], elements: number }>> {
 
-    const response = await axiosClient.instance.get('/food', {
+    return await axiosClient.instance.get<{ data:Food[], elements: number }>('/food', {
         params: {
             name: dto.name,
             page: dto.page,
             limit: dto.limit
         }
     });
-
-    return response.data;
 }
 
 export async function getFoodById(foodID: number): Promise<Food> {

@@ -1,9 +1,8 @@
 import CustomInput from "@/components/atoms/CustomInput";
-import { badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useLogin } from "@/hooks/query/useLogin";
-import { loginSchema, LoginSchema, defaultValues } from "@/schemas/login.schema";
+import { defaultValues, loginSchema, LoginSchema } from "@/schemas/login.schema";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -18,6 +17,20 @@ export default function LoginPage() {
 
     const onSubmit = (formData: LoginSchema) => {
         login(formData);
+    };
+
+    const LoginAsAdmin = () => {
+        login({
+            email: "eduarmercado4@gmail.com",
+            password: "Nutriton25!",
+        });
+    };
+
+    const LoginAsUser = () => {
+        login({
+            email: "Sofiareyes0090@gmail.com",
+            password: "Nutriton25!sofi",
+        });
     };
 
     return (
@@ -58,10 +71,9 @@ export default function LoginPage() {
                     </form>
                 </Form>
             </div>
-
-            <div className="mb-2 text-center text-sm">
-                ¿No tienes una cuenta?{' '}
-                <Link to="/register" className={badgeVariants({ variant: "secondary" })}> Regístrate </Link>
+            <div className="space-y-1">
+                <Button variant='outline' onClick={LoginAsAdmin} className="w-full">Iniciar sesión como Admin</Button>
+                <Button variant='outline' onClick={LoginAsUser} className="w-full">Iniciar sesión como Usuario</Button>
             </div>
         </>
     );

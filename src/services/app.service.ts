@@ -21,15 +21,13 @@ export type StatsResponse = {
 export async function getPlatformStats() {
     const { data } = await axiosClient.instance.get<StatsResponse[]>('/users');
 
-    const chartData = data.map((user) => ({
+    return data.map((user) => ({
         name: `${user.firstName} ${user.lastName}`,
         id: user.id,
         email: user.email,
         foodsEdited: user._count.foodsEdited,
         imagesCreated: user._count.imagesCreated
     }));
-
-    return chartData;
 }
 
 export async function getPriceTiers() {
