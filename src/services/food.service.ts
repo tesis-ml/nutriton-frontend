@@ -10,6 +10,12 @@ export type searchFoodRequestBody = {
 export type updateFoodRequestBody = {
     imageId: number;
     priceTierId: number;
+    hasMeat: boolean;
+    hasEggs: boolean;
+    hasMilk: boolean;
+    hasHoney: boolean;
+    hasGluten: boolean;
+    canBeADish: boolean;
 };
 
 // ------------------------------------------------------------
@@ -20,15 +26,18 @@ export async function assignFoodToUser() {
     return response.data;
 }
 
-export async function updateFood(foodID: number, dto: updateFoodRequestBody): Promise<Food> {
-    const response = await axiosClient.instance.patch(`/food/${foodID}`, dto);
+export async function updateFood(foodID: number, dto: updateFoodRequestBody) {
+    const response = await axiosClient.instance.patch<Food>(`/food/${foodID}`, dto);
 
     return response.data;
 }
 
-export async function searchFood(dto: searchFoodRequestBody): Promise<AxiosResponse<{ data:Food[], elements: number }>> {
+export async function searchFood(dto: searchFoodRequestBody): Promise<AxiosResponse<{
+    data: Food[],
+    elements: number
+}>> {
 
-    return await axiosClient.instance.get<{ data:Food[], elements: number }>('/food', {
+    return await axiosClient.instance.get<{ data: Food[], elements: number }>('/food', {
         params: {
             name: dto.name,
             page: dto.page,

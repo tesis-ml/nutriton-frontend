@@ -8,6 +8,10 @@ export type createImageRequestBody = {
     src: string;
 };
 
+export type getImagesRequestBody = {
+    name: string;
+} & PageableDTO;
+
 export type StatsResponse = {
     firstName: string;
     lastName: string;
@@ -19,7 +23,7 @@ export type StatsResponse = {
 // ------------------------------------------------------------
 
 export async function getPlatformStats() {
-    const { data } = await axiosClient.instance.get<StatsResponse[]>('/users');
+    const {data} = await axiosClient.instance.get<StatsResponse[]>('/users');
 
     return data.map((user) => ({
         name: `${user.firstName} ${user.lastName}`,
@@ -31,16 +35,14 @@ export async function getPlatformStats() {
 }
 
 export async function getPriceTiers() {
-
-    const response = await axiosClient.instance.get('/price-tiers');
-
-    return response.data;
+    return await axiosClient.instance.get<{ id: number, name: string }[]>('/price-tiers').then(res => res.data);
 }
 
-export async function getImages(params: PageableDTO) {
-    const response = await axiosClient.instance.get('/images', {
-        params
-    });
+export async function getFoodImages(params: getImagesRequestBody) {
+    const response = await axiosClient.instance.get<{
+        data: Image[],
+        elements: number
+    }>('/images', {params});
 
     return response.data;
 }

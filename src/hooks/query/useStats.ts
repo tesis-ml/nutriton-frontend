@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getPlatformStats } from "@/services/app.service.ts";
 
-export const statKeys = { all: ['material-lists'] as const };
+export const statKeys = { all: ['stats'] as const };
 
 export const useStats = () => {
     return useQuery({

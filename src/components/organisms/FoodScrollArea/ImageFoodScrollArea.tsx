@@ -1,21 +1,14 @@
-import { Button } from "@/components/ui/button";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { searchFood } from "@/services/food.service.ts";
-import { Image } from "lucide-react";
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
+import {getFoodImages} from "@/services/app.service.ts";
 
 type FoodScrollAreaProps = {
     foodQuery: string;
-    selectedFood: Food | null;
-    onFoodSelect: (food: Food) => void;
+    selectedFood: Image | null;
+    onFoodSelect: (food: Image) => void;
 }
 
-export default function FoodScrollArea({ foodQuery, onFoodSelect, selectedFood }: FoodScrollAreaProps) {
-    const [foods, setFoods] = useState<Food[]>([]);
+export default function ImageFoodScrollArea({foodQuery, onFoodSelect, selectedFood}: FoodScrollAreaProps) {
+    const [foods, setFoods] = useState<Image[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -39,14 +32,16 @@ export default function FoodScrollArea({ foodQuery, onFoodSelect, selectedFood }
 
             try {
                 setLoading(true);
-                const response = await searchFood({
+                const response = await getFoodImages({
                     name: foodQuery,
                     page,
-                    limit: 20
+                    limit: 5
                 });
 
-                const foodData = response.data.data || [];
-                const totalElements = response.data.elements || 0;
+                const foodData = response.data || [];
+                console.log("Foods fetched:", response.data)
+
+                const totalElements = response.elements || 0;
 
                 if (page === 1) {
                     setFoods(foodData);
@@ -112,7 +107,8 @@ export default function FoodScrollArea({ foodQuery, onFoodSelect, selectedFood }
 
     const renderLoadingIndicator = () => (
         <div className="w-full py-4 text-center">
-            <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+            <div
+                className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
         </div>
     );
 
@@ -122,37 +118,35 @@ export default function FoodScrollArea({ foodQuery, onFoodSelect, selectedFood }
     return (
         <div className="w-full flex flex-col gap-2 p-2">
             {
-                foods.filter(food => food.name).map((food, index) => (
+                foods.map((foodImage, index) => (
                     <div
-                        key={`${food.id}-${index}`}
+                        key={`${foodImage.id}-${index}`}
                         className={`
-                            flex justify-between p-3 border rounded  cursor-pointer transition-all
-                            ${selectedFood?.id === food.id
-                                ? 'bg-gray-700 text-white'
-                                : 'hover:bg-slate-200'}
+                            flex min-w-fit justify-between gap-2 p-3 border rounded  cursor-pointer transition-all
+                            ${selectedFood?.id === foodImage.id
+                            ? 'bg-gray-700 text-white'
+                            : 'hover:bg-slate-200'}
                             `}
                         ref={index === foods.length - 1 ? containerRef : null} // Only attach observer to last element
-                        onClick={() => onFoodSelect(food)}
                     >
-                        <div className="flex flex-col">
-                            <span className="font-semibold">{food.name}</span>
-                            <span className="text-xs text-gray-500">{food.foodCategory.name}</span>
+                        <div className="flex flex-col w-full"
+                             onClick={() => onFoodSelect(foodImage)}
+                        >
+                            <span className="font-semibold">{foodImage.name}</span>
+                            <span className="text-xs text-gray-500">
+                                {`${foodImage.createdBy.firstName} ${foodImage.createdBy.lastName}`}
+                            </span>
                         </div>
 
-                        <Popover>
-                            <PopoverTrigger>
-                                <Button
-                                    size="icon"
-                                >
-                                    <Image />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                                side="left"
-                            >
-                                Place content for the popover here.
-                            </PopoverContent>
-                        </Popover>
+                        <img
+                            src={foodImage.src || ""}
+                            className={`h-auto max-w-64 border
+                            ${selectedFood?.id === foodImage.id
+                                ? 'border border-white text-white'
+                                : 'hover:bg-slate-200'}
+                            `}
+                            alt={foodImage.name || "Imagen de comida"}
+                        />
 
                     </div>
                 ))

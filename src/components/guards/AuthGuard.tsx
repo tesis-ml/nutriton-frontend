@@ -26,7 +26,7 @@ export default function AuthGuard({ inverted = false }: { inverted?: boolean }) 
         };
 
         checkAuth();
-    }, [user, setUser]);
+    }, []);
 
     if (loading) {
         return <LoadingPage />;

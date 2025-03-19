@@ -45,7 +45,7 @@ interface Food {
     editedById: number | null;
     isEdited: boolean;
     foodCategory: FoodCategory;
-    priceTier: null;
-    editedBy: null;
-    image: null;
+    priceTier: number | null;
+    editedBy: number | null;
+    image: Image;
 }

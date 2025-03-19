@@ -1,1 +1,1 @@
-export { default } from './FoodScrollArea';
+export { default } from './ImageFoodScrollArea.tsx';
