@@ -1,11 +1,20 @@
-import { useEffect, useState, useRef } from 'react'
+import { Button } from "@/components/ui/button";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { searchFood } from "@/services/food.service.ts";
+import { Image } from "lucide-react";
+import { useEffect, useRef, useState } from 'react';
 
 type FoodScrollAreaProps = {
     foodQuery: string;
+    selectedFood: Food | null;
+    onFoodSelect: (food: Food) => void;
 }
 
-export default function FoodScrollArea({ foodQuery }: FoodScrollAreaProps) {
+export default function FoodScrollArea({ foodQuery, onFoodSelect, selectedFood }: FoodScrollAreaProps) {
     const [foods, setFoods] = useState<Food[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
@@ -90,13 +99,13 @@ export default function FoodScrollArea({ foodQuery }: FoodScrollAreaProps) {
     }, [foods, loading, hasMore, page]);
 
     const renderEmpty = () => (
-        <div className="w-full flex flex-col text-center gap-2 p-2">
+        <div className="w-full flex flex-col text-center gap-2 p-4 text-muted-foreground/50">
             Inicia una búsqueda
         </div>
     );
 
     const renderNoResults = () => (
-        <div className="w-full flex flex-col text-center gap-2 p-2">
+        <div className="w-full flex flex-col text-center gap-2 p-4 text-muted-foreground/50">
             No se encontraron resultados
         </div>
     );
@@ -116,13 +125,35 @@ export default function FoodScrollArea({ foodQuery }: FoodScrollAreaProps) {
                 foods.filter(food => food.name).map((food, index) => (
                     <div
                         key={`${food.id}-${index}`}
-                        className="p-3 border rounded hover:bg-gray-100 cursor-pointer transition-all"
+                        className={`
+                            flex justify-between p-3 border rounded  cursor-pointer transition-all
+                            ${selectedFood?.id === food.id
+                                ? 'bg-gray-700 text-white'
+                                : 'hover:bg-slate-200'}
+                            `}
                         ref={index === foods.length - 1 ? containerRef : null} // Only attach observer to last element
+                        onClick={() => onFoodSelect(food)}
                     >
                         <div className="flex flex-col">
                             <span className="font-semibold">{food.name}</span>
                             <span className="text-xs text-gray-500">{food.foodCategory.name}</span>
                         </div>
+
+                        <Popover>
+                            <PopoverTrigger>
+                                <Button
+                                    size="icon"
+                                >
+                                    <Image />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                side="left"
+                            >
+                                Place content for the popover here.
+                            </PopoverContent>
+                        </Popover>
+
                     </div>
                 ))
             }
@@ -130,7 +161,7 @@ export default function FoodScrollArea({ foodQuery }: FoodScrollAreaProps) {
             {loading && renderLoadingIndicator()}
 
             {!hasMore && foods.length > 0 && (
-                <div className="w-full py-4 text-center text-sm text-gray-500">
+                <div className="w-full flex flex-col text-center gap-2 p-4 text-muted-foreground/50">
                     No hay más resultados
                 </div>
             )}

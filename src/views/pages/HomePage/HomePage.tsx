@@ -10,6 +10,7 @@ export default function HomePage() {
     const { user } = useAuthStore();
     const [search, setSearch] = useState("");
     const foodQueryDebounced = useDebounce(search, 800);
+    const [selectedFood, setSelectedFood] = useState<Food | null>(null);
 
     const testFood = {
         "id": 1073,
@@ -75,17 +76,19 @@ export default function HomePage() {
     }
 
     return (
-        <section className="flex flex-col flex-1 border max-h-[88dvh]">
+        <section className="flex flex-col flex-1 max-h-[88dvh]">
             <h1 className="text-2xl font-semibold mb-8"> Bienvenid@ a la Nutriton, {user!.firstName}!</h1>
             <ResizablePanelGroup
                 direction="horizontal"
                 className="rounded-lg border w-full md:min-w-[450px]"
             >
                 <ResizablePanel defaultSize={50} minSize={25}>
+                    
                     <ResizablePanelGroup direction="vertical">
+                        
                         <ResizablePanel defaultSize={15} maxSize={15} minSize={10}>
                             <div
-                                className="flex flex-col border border-lime-500 h-full items-center justify-center p-6">
+                                className="flex flex-col h-full items-center justify-center p-6">
                                 <span className="font-semibold text-xl">
                                     {testFood.name}
                                 </span>
@@ -94,31 +97,39 @@ export default function HomePage() {
                                 </span>
                             </div>
                         </ResizablePanel>
+                        
                         <ResizableHandle withHandle />
+
                         <ResizablePanel defaultSize={75}>
-                            <div className="flex border border-lime-500 h-full items-center justify-center p-6">
+                            <div className="flex h-full items-center justify-center p-6">
                                 <span className="font-semibold">Three</span>
                             </div>
                         </ResizablePanel>
+
                     </ResizablePanelGroup>
                 </ResizablePanel>
+                
                 <ResizableHandle withHandle />
+
                 <ResizablePanel defaultSize={50} minSize={25} maxSize={60}>
-                    <div className="flex flex-col border border-lime-500 h-full p-6">
-                        <div className="flex-1 max-h-min p-4 border border-blue-500">
+                    <div className="flex flex-col h-full p-6">
+                        <div className="flex-1 max-h-min p-4">
                             <Input
                                 placeholder="Buscar imagen por nombre"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
-                        <div className="flex-1 flex border overflow-y-auto border-indigo-500">
+                        <div className="flex-1 flex overflow-y-auto">
                             <FoodScrollArea
                                 foodQuery={foodQueryDebounced}
+                                selectedFood={selectedFood}
+                                onFoodSelect={(food) => setSelectedFood(food)}
                             />
                         </div>
                     </div>
                 </ResizablePanel>
+
             </ResizablePanelGroup>
         </section>
     )
