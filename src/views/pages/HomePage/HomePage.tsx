@@ -11,15 +11,20 @@ import {useAssignFood} from "@/hooks/query/useAssignFood.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {Copy} from "lucide-react";
 import {toast} from "sonner";
+import {useLogout} from "@/hooks/useLogout.ts";
 
 export default function HomePage() {
 
     const {user} = useAuthStore();
+    const {logout} = useLogout()
     const [search, setSearch] = useState("");
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const foodQueryDebounced = useDebounce(search, 800);
     const [selectedFoodImage, setSelectedFoodImage] = useState<Image | null>(null);
-    const {data: currentFood, isLoading} = useAssignFood();
+    const {data: currentFood, isLoading, isError} = useAssignFood();
+
+    if (isError)
+        logout()
 
     return !isLoading ? (
             <section className="flex flex-col flex-1 max-h-[88dvh]">

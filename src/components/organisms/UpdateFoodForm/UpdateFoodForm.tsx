@@ -68,7 +68,7 @@ export default function UpdateFoodForm({foodSelected, currentFoodId, onFoodUpdat
         }
 
         if (foodSelected === null) {
-            toast.error("Por favor, selecciona una imagen para el alimento");
+            toast.error("Por favor, selecciona una imagen para el alimento", {id: "food.update"});
             return;
         }
 
@@ -78,16 +78,18 @@ export default function UpdateFoodForm({foodSelected, currentFoodId, onFoodUpdat
             ...dietaryFlags
         };
 
+        toast.loading("Actualizando...", {id: "food.update"});
+
         console.log("Datos del formulario:", {id: currentFoodId, ...formData});
 
         await mutateAsync();
 
         if (status == "error") {
-            toast.error("Error al actualizar el alimento");
+            toast.error("Error al actualizar el alimento", {id: "food.update"});
         } else {
             resetValues();
             onFoodUpdate?.()
-            toast.success(`Alimento actualizado correctamente`);
+            toast.success(`Alimento actualizado correctamente`, {id: "food.update"});
         }
 
         return;

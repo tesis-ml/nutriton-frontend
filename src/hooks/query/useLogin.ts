@@ -1,20 +1,23 @@
-import { LoginSchema } from '@/schemas/login.schema';
-import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import {LoginSchema} from '@/schemas/login.schema';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {useNavigate} from 'react-router-dom';
 import AuthService from '@/services/auth.service';
 import useAuthStore from '@/stores/auth.store';
-import { toast } from 'sonner';
-import { AxiosError } from 'axios';
+import {toast} from 'sonner';
+import {AxiosError} from 'axios';
+import {foodAssignmentKeys} from "@/hooks/query/useAssignFood.ts";
 
 export const useLogin = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const setUser = useAuthStore(state => state.setUser);
 
     const mutation = useMutation({
         mutationFn: (credentials: LoginSchema) => AuthService.login(credentials),
-        onSuccess: (user) => {
+        onSuccess: async (user) => {
             setUser(user);
-            navigate('/dashboard', { replace: true });
+            navigate('/dashboard', {replace: true});
+            await queryClient.invalidateQueries({queryKey: foodAssignmentKeys.main});
         },
         onError: (error) => {
             console.error(error);

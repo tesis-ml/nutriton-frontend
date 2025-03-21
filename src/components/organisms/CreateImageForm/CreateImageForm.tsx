@@ -48,7 +48,7 @@ export default function CreateImageForm({onImageCreated}: CreateImageFormProps) 
             loading: 'Guardando imagen...',
             success: (response) => {
                 onImageCreated(response);
-                return 'Imagen guardada correctamente';
+                return 'Imagen guardada y seleccionada correctamente';
             },
             error: 'Error al guardar la imagen'
         })
