@@ -7,5 +7,10 @@ type User = {
     "email": string,
     "firstName": string,
     "lastName": string,
-    "role": Role
+    "role": Role,
+    "_count": {
+        "foodsEdited": number,
+        "imagesCreated": number,
+        "dishesEdited": number
+    }
 }

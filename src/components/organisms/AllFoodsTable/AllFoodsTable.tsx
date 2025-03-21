@@ -1,9 +1,8 @@
-import React from 'react'
 
-type Props = {}
-
-export default function AllFoodsTable({}: Props) {
+export default function AllFoodsTable() {
     return (
-        <>AllFoodsTable</>
+        <>
+            AllFoodsTable
+        </>
     )
 }
