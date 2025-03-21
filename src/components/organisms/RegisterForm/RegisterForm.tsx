@@ -1,14 +1,14 @@
 import CustomInput from "@/components/atoms/CustomInput";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { useRegister } from "@/hooks/query/useRegister";
-import { registerSchema, RegisterSchema } from "@/schemas/register.schema";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from "react-hook-form";
+import {Button} from "@/components/ui/button.tsx";
+import {Form} from "@/components/ui/form.tsx";
+import {useRegister} from "@/hooks/query/useRegister.ts";
+import {registerSchema, RegisterSchema} from "@/schemas/register.schema.ts";
+import {zodResolver} from '@hookform/resolvers/zod';
+import {useForm} from "react-hook-form";
 
-export default function RegisterPage() {
+export default function RegisterForm() {
 
-    const { registerAsync, isLoading } = useRegister();
+    const {registerAsync, isLoading} = useRegister();
 
     const form = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema), defaultValues: {
@@ -34,7 +34,6 @@ export default function RegisterPage() {
             <div className="w-11/12 max-w-2xl mx-auto">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
-                        {/* Grid responsive para los campos de nombre y apellido */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <CustomInput
                                 name="first_name"
@@ -49,14 +48,12 @@ export default function RegisterPage() {
                             />
                         </div>
 
-                        {/* Email (siempre en su propia fila) */}
                         <CustomInput
                             name="email"
                             label="Email"
                             control={form.control}
                         />
 
-                        {/* Grid responsive para los campos de contraseña */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <CustomInput
                                 name="password"
@@ -73,14 +70,15 @@ export default function RegisterPage() {
                             />
                         </div>
 
-                        {/* Botón de registro */}
-                        <Button
-                            type="submit"
-                            className="w-full md:min-w-[200px] md:mx-auto"
-                            loading={isLoading}
-                        >
-                            Registrarse
-                        </Button>
+                        <div className="flex justify-end">
+                            <Button
+                                type="submit"
+                                className="md:min-w-[200px]"
+                                loading={isLoading}
+                            >
+                                Registrar
+                            </Button>
+                        </div>
                     </form>
                 </Form>
             </div>
