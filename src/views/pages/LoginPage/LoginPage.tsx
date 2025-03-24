@@ -19,19 +19,19 @@ export default function LoginPage() {
         login(formData);
     };
 
-    const LoginAsAdmin = () => {
-        login({
-            email: "eduarmercado4@gmail.com",
-            password: "Nutriton25!",
-        });
-    };
-
-    const LoginAsUser = () => {
-        login({
-            email: "Sofiareyes0090@gmail.com",
-            password: "Nutriton25!sofi",
-        });
-    };
+    // const LoginAsAdmin = () => {
+    //     login({
+    //         email: "eduarmercado4@gmail.com",
+    //         password: "Nutriton25!",
+    //     });
+    // };
+    //
+    // const LoginAsUser = () => {
+    //     login({
+    //         email: "Sofiareyes0090@gmail.com",
+    //         password: "Nutriton25!sofi",
+    //     });
+    // };
 
     return (
         <>
@@ -70,10 +70,6 @@ export default function LoginPage() {
                         </div>
                     </form>
                 </Form>
-            </div>
-            <div className="space-y-1">
-                <Button variant='outline' onClick={LoginAsAdmin} className="w-full">Iniciar sesión como Admin</Button>
-                <Button variant='outline' onClick={LoginAsUser} className="w-full">Iniciar sesión como Usuario</Button>
             </div>
         </>
     );

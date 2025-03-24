@@ -1,5 +1,165 @@
 import RegisterForm from "../../../components/organisms/RegisterForm"
 import AllFoodsTable from "@/components/organisms/AllFoodsTable";
+import {ColumnDef} from "@tanstack/react-table";
+import {Button} from "@/components/ui/button.tsx";
+import {ArrowUpDown} from "lucide-react";
+
+const columns: ColumnDef<{
+    id: string
+    amount: number
+    status: string
+    email: string
+}> [] = [
+    {
+        accessorKey: "status",
+        header: "Status",
+    },
+    {
+        accessorKey: "email",
+        header: ({column}) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Email
+                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                </Button>
+            )
+        },
+    },
+    {
+        accessorKey: "amount",
+        header: () => <div className="text-right">Amount</div>,
+        cell: ({row}) => {
+            const amount = parseFloat(row.getValue("amount"))
+            const formatted = new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            }).format(amount)
+
+            return <div className="text-right font-medium">{formatted}</div>
+        },
+    },
+]
+
+const payments = [
+    {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    },
+    {
+        id: "489e1d42",
+        amount: 125,
+        status: "processing",
+        email: "example@gmail.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    }, {
+        id: "728ed52f",
+        amount: 100,
+        status: "pending",
+        email: "m@example.com",
+    },
+    {
+        id: "489e1d42",
+        amount: 125,
+        status: "processing",
+        email: "example@gmail.com",
+    },
+    // ...
+]
+
 
 export default function AdminPage() {
     return (
@@ -24,7 +184,10 @@ export default function AdminPage() {
             <div className="flex flex-col gap-8 bg-white rounded-lg">
                 <h2 className="text-xl font-medium mb-4"> Tabla de alimentos en la plataforma </h2>
 
-                <AllFoodsTable />
+                <AllFoodsTable
+                    columns={columns}
+                    data={payments}
+                />
 
             </div>
         </section>
