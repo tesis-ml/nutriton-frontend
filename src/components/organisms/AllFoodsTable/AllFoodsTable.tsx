@@ -1,28 +1,25 @@
 import {
-    ColumnDef, ColumnFiltersState,
+    ColumnDef,
+    ColumnFiltersState,
     flexRender,
-    getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    Table as ReactTable,
     useReactTable,
-    Table as ReactTable
+    VisibilityState
 } from "@tanstack/react-table"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {Button} from "@/components/ui/button.tsx";
 import {useState} from "react";
 import {Input} from "@/components/ui/input.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {
-    ChevronLeft,
-    ChevronRight,
-    ChevronsLeft,
-    ChevronsRight,
-} from "lucide-react"
+import {DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight,} from "lucide-react"
+import {Checkbox} from "@/components/ui/checkbox.tsx";
+import {Label} from "@/components/ui/label.tsx";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -57,7 +54,7 @@ function DataTablePagination<TData>({table,}: DataTablePaginationProps<TData>) {
                 </Select>
             </div>
             <div className="flex items-center space-x-6 lg:space-x-8">
-                <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                <div className="flex w-fit items-center justify-center text-sm font-medium">
                     Page {table.getState().pagination.pageIndex + 1} of{" "}
                     {table.getPageCount()}
                 </div>
@@ -108,6 +105,7 @@ export default function AllFoodsTable<TData, TValue>({columns, data}: DataTableP
 
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
     const table = useReactTable({
         data,
@@ -118,20 +116,58 @@ export default function AllFoodsTable<TData, TValue>({columns, data}: DataTableP
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        state: {sorting, columnFilters},
+        onColumnVisibilityChange: setColumnVisibility,
+        state: {sorting, columnFilters, columnVisibility},
+
     })
 
     return (
         <>
             <div className="flex items-center py-4">
                 <Input
-                    placeholder="Filter emails..."
-                    value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+                    placeholder="Buscar por nombre..."
+                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
-                        table.getColumn("email")?.setFilterValue(event.target.value)
+                        table.getColumn("name")?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="ml-auto">
+                            Columns
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" side={"left"} className={"space-y-2 p-4"}>
+                        {table
+                            .getAllColumns()
+                            .filter(
+                                (column) => column.getCanHide()
+                            )
+                            .map((column) => {
+                                return (
+                                    <div className={`flex gap-3`}>
+                                        <Checkbox
+                                            key={column.id}
+                                            checked={column.getIsVisible()}
+                                            onCheckedChange={(value) =>
+                                                column.toggleVisibility(!!value)
+                                            }
+                                        />
+
+                                        <Label
+                                            className="capitalize"
+                                            htmlFor={column.id}
+                                        >
+                                            {column.id}
+                                        </Label>
+
+                                    </div>
+                                )
+                            })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <div className="rounded-md border min-h-[36rem]">
                 <Table>

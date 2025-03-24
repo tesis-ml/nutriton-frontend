@@ -42,10 +42,21 @@ interface Food {
     vitaminK: string;
     priceTierId: number | null;
     imageId: number | null;
+    hasMeat: boolean | null;
+    hasEggs: boolean | null;
+    hasMilk: boolean | null;
+    hasHoney: boolean | null;
+    hasGluten: boolean | null;
+    isOvoLactoVegetarian: boolean | null;
+    isLactoVegetarian: boolean | null;
+    isOvoVegetarian: boolean | null;
+    isVegan: boolean | null;
+    isGlutenFree: boolean | null;
+    canBeADish: boolean | null;
     editedById: number | null;
     isEdited: boolean;
     foodCategory: FoodCategory;
     priceTier: number | null;
     editedBy: number | null;
-    image: Image;
+    image: Image | null;
 }

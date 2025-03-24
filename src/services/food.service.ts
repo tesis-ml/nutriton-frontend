@@ -4,7 +4,7 @@ import {AxiosResponse} from "axios";
 // ------------------------------------------------------------
 
 export type searchFoodRequestBody = {
-    name: string;
+    name?: string;
 } & PageableDTO;
 
 export type updateFoodRequestBody = {
@@ -37,12 +37,13 @@ export async function searchFood(dto: searchFoodRequestBody): Promise<AxiosRespo
     elements: number
 }>> {
 
+    const finalDTO = Object.fromEntries(
+        Object.entries(dto).filter(([, v]) => v != null)
+    );
+
+
     return await axiosClient.instance.get<{ data: Food[], elements: number }>('/food', {
-        params: {
-            name: dto.name,
-            page: dto.page,
-            limit: dto.limit
-        }
+        params: finalDTO
     });
 }
 
