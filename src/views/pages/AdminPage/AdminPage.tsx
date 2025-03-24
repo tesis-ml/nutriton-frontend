@@ -1,8 +1,6 @@
 import RegisterForm from "../../../components/organisms/RegisterForm"
 import AllFoodsTable from "@/components/organisms/AllFoodsTable";
 import {ColumnDef} from "@tanstack/react-table";
-import {Button} from "@/components/ui/button.tsx";
-import {ArrowUpDown} from "lucide-react";
 import {useAllFood} from "@/hooks/query/useAllFood.ts";
 
 const columns: ColumnDef<Food> [] = [
