@@ -53,13 +53,17 @@ const columns: ColumnDef<Food> [] = [
         header: "canBeADish"
     },
     {
-        accessorKey: "editedById",
-        header: "editedById"
+        accessorKey: "editedBy",
+        header: "editedBy",
+        cell: ({row}) => {
+            const value: { firstName: string; lastName: string } | null = row.getValue("editedBy");
+            return (
+                <p>
+                    {value?.firstName ?? ""} {value?.lastName ?? ""}
+                </p>
+            );
+        }
     },
-    // {
-    //     accessorKey: "status",
-    //     header: "Status",
-    // },
     // {
     //     accessorKey: "email",
     //     header: ({column}) => {

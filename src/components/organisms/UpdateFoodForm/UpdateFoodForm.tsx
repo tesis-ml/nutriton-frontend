@@ -1,4 +1,4 @@
-import {FormEvent, useState} from 'react'
+import {FormEvent, useEffect, useState} from 'react'
 import {usePriceTiers} from "@/hooks/query/usePriceTiers.ts";
 import {Label} from "@/components/ui/label"
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
@@ -15,7 +15,7 @@ const itemsLabels: Map<string, string> = new Map<string, string>([
 ]);
 
 const foodProperties = [
-    {id: 'hasMeat', label: 'Contiene carne'},
+    {id: 'hasMeat', label: 'Proviene de un animal'},
     {id: 'hasEggs', label: 'Contiene huevos'},
     {id: 'hasMilk', label: 'Contiene lácteos'},
     {id: 'hasHoney', label: 'Contiene miel'},
@@ -25,14 +25,14 @@ const foodProperties = [
 
 type UpdateFoodFormProps = {
     onFoodUpdate: () => void;
-    foodSelected: Image | null;
-    currentFoodId: number;
+    imageFoodSelected: Image | null;
+    currentFood: Food | null;
 };
 
-export default function UpdateFoodForm({foodSelected, currentFoodId, onFoodUpdate}: UpdateFoodFormProps) {
+export default function UpdateFoodForm({imageFoodSelected, currentFood, onFoodUpdate}: UpdateFoodFormProps) {
     const {data: prices, isLoading: pricesLoading} = usePriceTiers();
 
-    const [priceTierId, setPriceTierId] = useState(1);
+    const [priceTierId, setPriceTierId] = useState(currentFood?.priceTierId ?? 1);
     const [dietaryFlags, setDietaryFlags] = useState({
         hasMeat: false,
         hasEggs: false,
@@ -41,10 +41,26 @@ export default function UpdateFoodForm({foodSelected, currentFoodId, onFoodUpdat
         hasGluten: false,
         canBeADish: false
     });
-    const {mutateAsync, status} = useUpdateFood(currentFoodId, {
-        imageId: foodSelected?.id ?? 0,
+    const {mutateAsync, status} = useUpdateFood(currentFood?.id ?? 0, {
+        imageId: imageFoodSelected?.id ?? 0,
         priceTierId, ...dietaryFlags
     });
+
+    useEffect(() => {
+        if (currentFood) {
+            setPriceTierId(currentFood.priceTierId || 1);
+            setDietaryFlags({
+                hasMeat: currentFood.hasMeat || false,
+                hasEggs: currentFood.hasEggs || false,
+                hasMilk: currentFood.hasMilk || false,
+                hasHoney: currentFood.hasHoney || false,
+                hasGluten: currentFood.hasGluten || false,
+                canBeADish: currentFood.canBeADish || false
+            });
+        } else {
+            resetValues();
+        }
+    }, [currentFood]);
 
     const resetValues = () => {
         setDietaryFlags({
@@ -62,25 +78,30 @@ export default function UpdateFoodForm({foodSelected, currentFoodId, onFoodUpdat
     const updateFood = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (!currentFood) {
+            toast.error("Por favor, selecciona una comida para poder actualizarla");
+            return;
+        }
+
         if (!priceTierId) {
             toast.error("Por favor, selecciona un rango de precio");
             return;
         }
 
-        if (foodSelected === null) {
+        if (imageFoodSelected === null) {
             toast.error("Por favor, selecciona una imagen para el alimento", {id: "food.update"});
             return;
         }
 
         const formData = {
-            imageId: foodSelected.id,
+            imageId: imageFoodSelected.id,
             priceTierId,
             ...dietaryFlags
         };
 
         toast.loading("Actualizando...", {id: "food.update"});
 
-        console.log("Datos del formulario:", {id: currentFoodId, ...formData});
+        console.log("Datos del formulario:", {id: currentFood, ...formData});
 
         await mutateAsync();
 
@@ -150,7 +171,7 @@ export default function UpdateFoodForm({foodSelected, currentFoodId, onFoodUpdat
             <div className="flex justify-evenly items-center overflow-y-auto">
 
                 <img
-                    src={foodSelected?.src}
+                    src={imageFoodSelected?.src}
                     alt=""
                     className="w-auto max-h-44"
                 />

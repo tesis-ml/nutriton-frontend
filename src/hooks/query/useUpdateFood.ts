@@ -3,6 +3,7 @@ import {updateFood, updateFoodRequestBody} from "@/services/food.service.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {foodAssignmentKeys} from "@/hooks/query/useAssignFood.ts";
 import {statKeys} from "@/hooks/query/useStats.ts";
+import {userHistoryKeys} from "@/hooks/query/useUserHistory.ts";
 
 export function useUpdateFood(foodId: number, reqBody: updateFoodRequestBody) {
 
@@ -14,6 +15,7 @@ export function useUpdateFood(foodId: number, reqBody: updateFoodRequestBody) {
             console.log('Food updated successfully:', data);
             await queryClient.invalidateQueries({queryKey: foodAssignmentKeys.main});
             await queryClient.invalidateQueries({queryKey: statKeys.all});
+            await queryClient.invalidateQueries({queryKey: userHistoryKeys.main});
             return data;
         },
         onError: (error) => {

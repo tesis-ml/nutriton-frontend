@@ -56,6 +56,10 @@ interface Food {
     editedById: number | null;
     isEdited: boolean;
     foodCategory: FoodCategory;
+    editedBy: {
+        "firstName": string,
+        "lastName": string
+    } | null;
     priceTier: number | null;
     editedBy: number | null;
     image: Image | null;

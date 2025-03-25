@@ -1,4 +1,3 @@
-// src/router/index.tsx
 import AuthGuard from "@/components/guards/AuthGuard";
 import RoleGuard from "@/components/guards/RoleGuard";
 import AppLayout from "@/views/layouts/AppLayout";
@@ -10,6 +9,7 @@ import LoginPage from "@/views/pages/LoginPage";
 import ProfilePage from "@/views/pages/ProfilePage";
 import StatsPage from "@/views/pages/StatsPage";
 import { createBrowserRouter, createRoutesFromElements, Navigate, Route } from "react-router-dom";
+import HistoryPage from "@/views/pages/HistoryPage";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -26,6 +26,7 @@ export const router = createBrowserRouter(
                 <Route element={<AppLayout />}>
                     <Route path="/dashboard" element={<HomePage />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/history" element={<HistoryPage />} />
                 </Route>
 
                 <Route element={<AppLayout />}>

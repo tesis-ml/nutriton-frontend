@@ -19,14 +19,14 @@ export default function HomePage() {
     const {logout} = useLogout()
     const [search, setSearch] = useState("");
     const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const foodQueryDebounced = useDebounce(search, 800);
+    const foodQueryDebounced = useDebounce(search, 500);
     const [selectedFoodImage, setSelectedFoodImage] = useState<Image | null>(null);
     const {data: currentFood, isLoading, isError} = useAssignFood();
 
     if (isError)
         logout()
 
-    return !isLoading ? (
+    return !isLoading && currentFood ? (
             <section className="flex flex-col flex-1 max-h-[88dvh]">
                 <h1 className="text-2xl font-semibold mb-8"> Bienvenid@ a la Nutriton, {user!.firstName}!</h1>
                 <ResizablePanelGroup
@@ -68,11 +68,11 @@ export default function HomePage() {
 
                             <ResizablePanel defaultSize={75}>
                                 <UpdateFoodForm
-                                    foodSelected={selectedFoodImage}
+                                    imageFoodSelected={selectedFoodImage}
                                     onFoodUpdate={() => {
                                         setSelectedFoodImage(null);
                                     }}
-                                    currentFoodId={currentFood.id}
+                                    currentFood={currentFood}
                                 />
                             </ResizablePanel>
 
