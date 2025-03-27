@@ -31,6 +31,7 @@ type UpdateFoodFormProps = {
 
 export default function UpdateFoodForm({imageFoodSelected, currentFood, onFoodUpdate}: UpdateFoodFormProps) {
     const {data: prices, isLoading: pricesLoading} = usePriceTiers();
+    const [isMobileView, setIsMobileView] = useState(false);
 
     const [priceTierId, setPriceTierId] = useState(currentFood?.priceTierId ?? 1);
     const [dietaryFlags, setDietaryFlags] = useState({
@@ -45,6 +46,22 @@ export default function UpdateFoodForm({imageFoodSelected, currentFood, onFoodUp
         imageId: imageFoodSelected?.id ?? 0,
         priceTierId, ...dietaryFlags
     });
+
+    useEffect(() => {
+        // Check screen size and set mobile view state
+        const handleResize = () => {
+            setIsMobileView(window.innerWidth < 768);
+        };
+
+        // Set initial state
+        handleResize();
+
+        // Add event listener
+        window.addEventListener('resize', handleResize);
+
+        // Clean up
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         if (currentFood) {
@@ -130,11 +147,11 @@ export default function UpdateFoodForm({imageFoodSelected, currentFood, onFoodUp
     if (pricesLoading)
         return <div className="flex justify-center p-4">Cargando opciones...</div>;
 
-
     return (
-        <form onSubmit={updateFood} className="space-y-6 p-8 flex flex-col">
+        <form onSubmit={updateFood}
+              className="space-y-4 sm:space-y-6 p-4 sm:p-6 md:p-8 flex flex-col h-full overflow-y-auto">
             <div>
-                <h3 className="mb-4 text-lg">Rango de precio</h3>
+                <h3 className="mb-2 sm:mb-4 text-base sm:text-lg">Rango de precio</h3>
                 <RadioGroup
                     defaultValue={priceTierId.toString()}
                     value={priceTierId.toString()}
@@ -142,41 +159,59 @@ export default function UpdateFoodForm({imageFoodSelected, currentFood, onFoodUp
                     className="flex w-full justify-evenly"
                 >
                     {prices!.map((tier: PriceTier) => (
-                        <div key={tier.id} className="flex flex-col items-center gap-3">
-                            <RadioGroupItem className="h-10 w-auto aspect-square rounded-md" value={tier.id.toString()}
-                                            id={`price-${tier.id}`}/>
-                            <Label htmlFor={`price-${tier.id}`} className="text-xl">{itemsLabels.get(tier.name)}</Label>
+                        <div key={tier.id} className="flex flex-col items-center gap-1 sm:gap-3">
+                            <RadioGroupItem
+                                className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 aspect-square rounded-md"
+                                value={tier.id.toString()}
+                                id={`price-${tier.id}`}
+                            />
+                            <Label
+                                htmlFor={`price-${tier.id}`}
+                                className="text-sm sm:text-base md:text-xl"
+                            >
+                                {itemsLabels.get(tier.name)}
+                            </Label>
                         </div>
                     ))}
                 </RadioGroup>
             </div>
 
             <div>
-                <h3 className="mb-4 text-lg">Características del alimento</h3>
-                <div className="grid grid-cols-3 gap-4">
+                <h3 className="mb-2 sm:mb-4 text-base sm:text-lg">Características del alimento</h3>
+                <div className={`grid ${isMobileView ? 'grid-cols-2' : 'grid-cols-3'} gap-2 sm:gap-4`}>
                     {foodProperties.map(item => (
-                        <div key={item.id} className="flex flex-col items-center gap-2">
+                        <div key={item.id} className="flex flex-col items-center gap-1 sm:gap-2">
                             <Checkbox
                                 id={item.id}
                                 checked={dietaryFlags[item.id as keyof typeof dietaryFlags]}
-                                className="h-12 w-12"
+                                className="h-6 w-6 sm:h-8 sm:w-8 md:h-12 md:w-12"
                                 onCheckedChange={(checked) => handleCheckboxChange(item.id, checked as boolean)}
                             />
-                            <Label htmlFor={item.id}>{item.label}</Label>
+                            <Label
+                                htmlFor={item.id}
+                                className="text-xs sm:text-sm md:text-base text-center"
+                            >
+                                {item.label}
+                            </Label>
                         </div>
                     ))}
                 </div>
             </div>
-            <hr className="my-4"/>
-            <div className="flex justify-evenly items-center overflow-y-auto">
 
-                <img
-                    src={imageFoodSelected?.src}
-                    alt=""
-                    className="w-auto max-h-44"
-                />
+            <hr className="my-2 sm:my-4"/>
 
-                <Button type="submit">
+            <div className={`flex ${isMobileView ? 'flex-col' : 'flex-row'} justify-evenly items-center gap-4 mt-auto`}>
+                {imageFoodSelected && (
+                    <div className="flex justify-center">
+                        <img
+                            src={imageFoodSelected?.src}
+                            alt=""
+                            className="w-auto min-w-10 max-h-24 sm:max-h-32 md:max-h-44 object-contain"
+                        />
+                    </div>
+                )}
+
+                <Button type="submit" className="w-full sm:w-auto">
                     Actualizar alimento
                 </Button>
             </div>
