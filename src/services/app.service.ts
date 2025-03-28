@@ -5,7 +5,7 @@ import axiosClient from "@/config/axios.config";
 
 export type createImageRequestBody = {
     name: string;
-    src: string;
+    file: File;
 };
 
 export type getImagesRequestBody = {
@@ -48,7 +48,11 @@ export async function getFoodImages(params: getImagesRequestBody) {
 }
 
 export async function createImage(requestBody: createImageRequestBody) {
-    const response = await axiosClient.instance.post('/images', requestBody);
+    const formData = new FormData();
+    formData.append('name', requestBody.name);
+    formData.append('file', requestBody.file);
+
+    const response = await axiosClient.instance.post('/images', formData, {headers: {'Content-Type': 'multipart/form-data'}});
 
     return response.data;
 }
