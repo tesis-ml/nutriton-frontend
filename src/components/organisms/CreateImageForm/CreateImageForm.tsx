@@ -1,5 +1,4 @@
 import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
 import {
     SheetContent,
     SheetDescription,
@@ -12,7 +11,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {useState, useRef, useEffect} from "react";
 import {toast} from "sonner";
 import {useCreateImage} from "@/hooks/query/useCreateImage.ts";
-import {PlusCircle, Image as ImageIcon} from "lucide-react";
+import {PlusCircle} from "lucide-react";
 
 type CreateImageFormProps = {
     onImageCreated: (image: Image) => void;
@@ -22,37 +21,49 @@ export default function CreateImageForm({onImageCreated}: CreateImageFormProps) 
     const [name, setName] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const imageContainerRef = useRef<HTMLDivElement>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     const {mutateAsync, isPending} = useCreateImage({file: imageFile!, name});
 
-    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleNameChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setName(e.target.value);
     };
 
-    const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
-        const items = e.clipboardData.items;
+    const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        // Revisar si hay imágenes en el portapapeles
+        const items = e.clipboardData?.items;
+        let imageFound = false;
 
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].type.indexOf('image') !== -1) {
-                e.preventDefault();
+        if (items) {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    // Prevenir comportamiento predeterminado si es imagen
+                    e.preventDefault();
 
-                const file = items[i].getAsFile();
-                if (file) {
-                    const fileWithName = new File(
-                        [file],
-                        file.name || `image-${Date.now()}.${file.type.split('/')[1] || 'png'}`,
-                        {type: file.type}
-                    );
+                    const file = items[i].getAsFile();
+                    if (file) {
+                        const fileWithName = new File(
+                            [file],
+                            file.name || `image-${Date.now()}.${file.type.split('/')[1] || 'png'}`,
+                            {type: file.type}
+                        );
 
-                    setImageFile(fileWithName);
+                        setImageFile(fileWithName);
 
-                    const url = URL.createObjectURL(fileWithName);
-                    setPreviewUrl(url);
+                        // Crear URL para previsualización
+                        const url = URL.createObjectURL(fileWithName);
+                        setPreviewUrl(url);
 
-                    break;
+                        imageFound = true;
+                        break;
+                    }
                 }
             }
+        }
+
+        // Si no se encontró imagen, deja que el comportamiento normal ocurra para el texto
+        if (!imageFound) {
+            // No hacer nada, el textarea manejará el texto pegado normalmente
         }
     };
 
@@ -81,18 +92,12 @@ export default function CreateImageForm({onImageCreated}: CreateImageFormProps) 
         });
     };
 
-    const clearPastedImage = () => {
+    const removeImage = () => {
         if (previewUrl) {
             URL.revokeObjectURL(previewUrl);
         }
         setPreviewUrl(null);
         setImageFile(null);
-    };
-
-    const focusImageContainer = () => {
-        if (imageContainerRef.current) {
-            imageContainerRef.current.focus();
-        }
     };
 
     useEffect(() => {
@@ -126,63 +131,45 @@ export default function CreateImageForm({onImageCreated}: CreateImageFormProps) 
                 </SheetHeader>
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                                Nombre
-                            </Label>
-                            <Input
-                                autoComplete={"off"}
-                                id="name"
-                                value={name}
-                                onChange={handleNameChange}
-                                className="col-span-3"
-                                placeholder="Nombre de la imagen"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-start gap-4">
-                            <Label className="text-right pt-2">
-                                Imagen
-                            </Label>
-                            <div className="col-span-3">
-                                {imageFile && previewUrl ? (
-                                    // Mostrar la imagen pegada
-                                    <div className="relative">
-                                        <img
-                                            src={previewUrl}
-                                            alt="Imagen pegada"
-                                            className="max-h-48 rounded-md border border-gray-200"
-                                        />
-                                        <div className="mt-2 text-sm text-gray-500">
-                                            {imageFile.name} ({(imageFile.size / 1024).toFixed(2)} KB)
-                                        </div>
-                                        <Button
-                                            type="button"
-                                            variant="destructive"
-                                            size="sm"
-                                            className="absolute top-2 right-2"
-                                            onClick={clearPastedImage}
-                                        >
-                                            Eliminar
-                                        </Button>
-                                    </div>
-                                ) : (
-                                    // Mostrar área para pegar
-                                    <div
-                                        ref={imageContainerRef}
-                                        onPaste={handlePaste}
-                                        onClick={focusImageContainer}
-                                        tabIndex={0}
-                                        className="border-2 border-dashed border-gray-300 rounded-md p-4 h-32 flex flex-col items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                    >
-                                        <ImageIcon className="h-10 w-10 text-gray-400 mb-2"/>
-                                        <p className="text-sm text-gray-500">
-                                            Haz clic aquí y pega una imagen desde el portapapeles (Ctrl+V)
-                                        </p>
-                                        <p className="text-xs text-gray-400 mt-1">
-                                            O pega directamente desde tu dispositivo móvil
-                                        </p>
-                                    </div>
-                                )}
+                        {/* Área donde se muestra la imagen pegada */}
+                        {imageFile && previewUrl && (
+                            <div className="relative rounded-md overflow-hidden border border-gray-200">
+                                <img
+                                    src={previewUrl}
+                                    alt="Imagen pegada"
+                                    className="w-full max-h-48 object-contain"
+                                />
+                                <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="sm"
+                                    className="absolute top-2 right-2"
+                                    onClick={removeImage}
+                                >
+                                    Eliminar
+                                </Button>
+                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1">
+                                    {imageFile.name} ({(imageFile.size / 1024).toFixed(2)} KB)
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Campo de texto similar a un chat */}
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="name">Nombre y descripción</Label>
+                            <div className="flex flex-col">
+                                <textarea
+                                    ref={textAreaRef}
+                                    id="name"
+                                    value={name}
+                                    onChange={handleNameChange}
+                                    onPaste={handlePaste}
+                                    placeholder="Escribe un nombre o descripción y pega una imagen (Ctrl+V)..."
+                                    className="flex-grow p-2 border rounded-md resize-none min-h-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Puedes pegar una imagen directamente en el campo de texto (Ctrl+V)
+                                </p>
                             </div>
                         </div>
                     </div>
