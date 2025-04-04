@@ -178,16 +178,14 @@ export default function HomePage() {
 
                                 <ResizablePanel defaultSize={75}>
                                     <UpdateFoodForm
+                                        onFoodUpdate={() => {}}
                                         imageFoodSelected={selectedFoodImage}
-                                        onFoodUpdate={() => {
-                                            setSelectedFoodImage(null);
-                                        }}
                                         currentFood={currentFood}
                                     />
                                 </ResizablePanel>
                             </ResizablePanelGroup>
                         </ResizablePanel>
-
+{/*
                         <ResizableHandle withHandle/>
 
                         <ResizablePanel defaultSize={defaultSizes.rightPanel} minSize={30}>
@@ -221,6 +219,7 @@ export default function HomePage() {
                                 </div>
                             </div>
                         </ResizablePanel>
+                        */}
                     </ResizablePanelGroup>
                 )}
             </section>

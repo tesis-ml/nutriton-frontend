@@ -6,18 +6,10 @@ import {useUserHistory} from "@/hooks/query/useUserHistory.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {toast} from "sonner";
 import {Copy} from "lucide-react";
-import {Input} from "@/components/ui/input.tsx";
-import {Sheet} from "@/components/ui/sheet.tsx";
-import CreateImageForm from "@/components/organisms/CreateImageForm";
-import ImageFoodScrollArea from "@/components/organisms/FoodScrollArea";
-import useDebounce from "@/hooks/useDebounce.ts";
 
 export default function HistoryPage() {
 
     const {user} = useAuthStore();
-    const [search, setSearch] = useState("");
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const foodQueryDebounced = useDebounce(search, 500);
     const [foodSelected, setFoodSelected] = useState<Food | null>(null);
     const [selectedFoodImage, setSelectedFoodImage] = useState<Image | null>(foodSelected?.image ?? null);
 
@@ -28,10 +20,9 @@ export default function HistoryPage() {
     });
 
     useEffect(() => {
+        console.log(selectedFoodImage);
         setSelectedFoodImage(foodSelected?.image ?? null);
     }, [foodSelected]);
-
-    console.log(userHistory)
 
     return (
         <section className="flex flex-col flex-1 max-h-[88dvh]">
@@ -120,7 +111,7 @@ export default function HistoryPage() {
                         </div>
                     </div>
                 </ResizablePanel>
-
+{/*
                 <ResizableHandle withHandle/>
 
                 <ResizablePanel defaultSize={30} minSize={25}>
@@ -153,7 +144,7 @@ export default function HistoryPage() {
                         </div>
                     </div>
                 </ResizablePanel>
-
+*/}
             </ResizablePanelGroup>
         </section>
     )

@@ -43,7 +43,7 @@ export default function UpdateFoodForm({imageFoodSelected, currentFood, onFoodUp
         canBeADish: false
     });
     const {mutateAsync, status} = useUpdateFood(currentFood?.id ?? 0, {
-        imageId: imageFoodSelected?.id ?? 0,
+        imageId: 0,
         priceTierId, ...dietaryFlags
     });
 
@@ -105,13 +105,8 @@ export default function UpdateFoodForm({imageFoodSelected, currentFood, onFoodUp
             return;
         }
 
-        if (imageFoodSelected === null) {
-            toast.error("Por favor, selecciona una imagen para el alimento", {id: "food.update"});
-            return;
-        }
-
         const formData = {
-            imageId: imageFoodSelected.id,
+            imageId: 1,
             priceTierId,
             ...dietaryFlags
         };
