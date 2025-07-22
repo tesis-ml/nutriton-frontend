@@ -9,6 +9,7 @@ La aplicación implementa un workflow de asignación automática donde los usuar
 ## Arquitectura del Sistema
 
 ### Stack Tecnológico Principal
+
 - **Framework**: React 18.3.1 con TypeScript 5.5.3
 - **Build Tool**: Vite 5.4.1 con SWC para compilación rápida
 - **UI Framework**: Radix UI + ShadCN/UI + TailwindCSS
@@ -18,6 +19,7 @@ La aplicación implementa un workflow de asignación automática donde los usuar
 - **Routing**: React Router DOM 6.26.1
 
 ### Arquitectura de UI
+
 - **Sistema de Design**: Atomic Design Pattern
 - **Componentes**: ShadCN/UI con Radix UI primitives
 - **Styling**: TailwindCSS con utilidades personalizadas
@@ -26,7 +28,7 @@ La aplicación implementa un workflow de asignación automática donde los usuar
 
 ## Estructura del Proyecto
 
-```
+```text
 src/
 ├── components/              # Componentes reutilizables
 │   ├── atoms/              # Elementos básicos
@@ -86,6 +88,7 @@ src/
 ## Modelos de Datos Principales
 
 ### Modelo de Alimento
+
 ```typescript
 interface Food {
   id: number;
@@ -135,6 +138,7 @@ interface Food {
 ```
 
 ### Modelo de Usuario
+
 ```typescript
 interface User {
   id: number;
@@ -150,6 +154,7 @@ interface User {
 ### 1. Sistema de Asignación Automática
 
 #### Workflow de Asignación
+
 ```typescript
 const { data: currentFood, isLoading, isError } = useAssignFood();
 
@@ -163,6 +168,7 @@ const { data: currentFood, isLoading, isError } = useAssignFood();
 ### 2. Formulario de Validación Nutricional
 
 #### Interfaz de Actualización
+
 ```typescript
 const UpdateFoodForm = ({ currentFood, imageFoodSelected, onFoodUpdate }) => {
   // Estados locales para clasificación
@@ -186,6 +192,7 @@ const UpdateFoodForm = ({ currentFood, imageFoodSelected, onFoodUpdate }) => {
 ```
 
 #### Campos de Clasificación
+
 ```typescript
 const foodProperties = [
   { id: 'hasMeat', label: 'Proviene de un animal' },
@@ -207,6 +214,7 @@ const priceLabels = new Map([
 ### 3. Sistema de Gestión de Imágenes
 
 #### Búsqueda y Selección
+
 - **Búsqueda con debounce**: Optimización de consultas en tiempo real
 - **Scroll infinito**: Carga eficiente de grandes catálogos
 - **Selección visual**: Interfaz intuitiva para asociar imágenes
@@ -215,6 +223,7 @@ const priceLabels = new Map([
 ### 4. Diseño Responsivo Avanzado
 
 #### Layout Adaptativo
+
 ```typescript
 const HomePage = () => {
   const [isMobileView, setIsMobileView] = useState(false);
@@ -239,6 +248,7 @@ const HomePage = () => {
 ```
 
 #### Componentes Responsivos
+
 - **Paneles redimensionables**: `ResizablePanelGroup` para desktop/tablet
 - **Stack vertical**: Layout mobile optimizado
 - **Breakpoints dinámicos**: Adaptación automática por tamaño
@@ -247,6 +257,7 @@ const HomePage = () => {
 ### 5. Estado Global y Persistencia
 
 #### Store de Autenticación
+
 ```typescript
 interface UserStore {
   user: User | undefined;
@@ -272,6 +283,7 @@ const useAuthStore = create<UserStore>()()
 ### 6. Sistema de Validación y Formularios
 
 #### Validación con Zod + React Hook Form
+
 ```typescript
 // Esquemas de validación
 const loginSchema = z.object({
@@ -288,7 +300,9 @@ const registerSchema = z.object({
 ```
 
 ## Sistema de Rutas y Protección
+
 ### Configuración de Router
+
 ```typescript
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -320,12 +334,15 @@ export const router = createBrowserRouter(
 ```
 
 ### Guards de Protección
+
 #### AuthGuard
+
 - Verifica estado de autenticación
 - Redirecciona según estado del usuario
 - Soporte para modo "inverted" (rutas públicas)
 
 #### RoleGuard
+
 - Validación de roles de usuario
 - Control de acceso granular
 - Manejo de permisos dinámicos
@@ -333,12 +350,14 @@ export const router = createBrowserRouter(
 ## Optimizaciones de Rendimiento
 
 ### TanStack Query
+
 - **Caching inteligente**: Reducción de llamadas redundantes
 - **Sincronización automática**: Updates en tiempo real
 - **Estados de carga**: UX optimizada con skeletons
 - **Manejo de errores**: Recovery automático
 
 ### Debouncing y Throttling
+
 ```typescript
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -359,6 +378,7 @@ const foodQueryDebounced = useDebounce(search, 500);
 ```
 
 ### Code Splitting
+
 - **Lazy loading**: Carga de componentes bajo demanda
 - **Route-based splitting**: División por rutas
 - **Bundle optimization**: Análisis de tamaño con Vite
@@ -366,12 +386,14 @@ const foodQueryDebounced = useDebounce(search, 500);
 ## Tecnologías de UI Avanzadas
 
 ### ShadCN/UI + Radix UI
+
 - **Componentes accesibles**: ARIA compliant
 - **Personalización total**: CSS variables + TailwindCSS
 - **Composición flexible**: Primitive-based architecture
 - **TypeScript nativo**: Tipos completos incluidos
 
 ### Componentes Destacados
+
 ```typescript
 // Ejemplo de componente resizable
 <ResizablePanelGroup direction="horizontal">
@@ -409,6 +431,7 @@ npm run lint         # Análisis de código con ESLint
 ## Configuración de Deployment
 
 ### Vercel (Configurado)
+
 ```json
 // vercel.json
 {
@@ -420,66 +443,9 @@ npm run lint         # Análisis de código con ESLint
 ```
 
 ### Variables de Entorno
+
 ```env
 VITE_API_URL=*COMPLETA AQUÍ*
 VITE_API_TIMEOUT=*COMPLETA AQUÍ*
 VITE_APP_ENV=production
-```
-
----
-
-**Autor:** *COMPLETA AQUÍ*  
-**Institución:** *COMPLETA AQUÍ*  
-**Fecha:** *COMPLETA AQUÍ*  
-**Versión:** 0.0.0
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
 ```
